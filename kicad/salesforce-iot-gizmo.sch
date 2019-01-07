@@ -1,0 +1,429 @@
+EESchema Schematic File Version 4
+LIBS:salesforce-iot-gizmo-cache
+EELAYER 26 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L RF_Module:ESP-12E U2
+U 1 1 5BD5D63F
+P 3550 2700
+F 0 "U2" H 3550 3678 50  0000 C CNN
+F 1 "ESP-12E" H 3550 3587 50  0000 C CNN
+F 2 "RF_Module:ESP-12E" H 3550 2700 50  0001 C CNN
+F 3 "http://wiki.ai-thinker.com/_media/esp8266/esp8266_series_modules_user_manual_v1.1.pdf" H 3200 2800 50  0001 C CNN
+	1    3550 2700
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR03
+U 1 1 5BD5D700
+P 3550 5500
+F 0 "#PWR03" H 3550 5250 50  0001 C CNN
+F 1 "GND" H 3555 5327 50  0000 C CNN
+F 2 "" H 3550 5500 50  0001 C CNN
+F 3 "" H 3550 5500 50  0001 C CNN
+	1    3550 5500
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Conn_01x04_Male J1
+U 1 1 5BD5DBE0
+P 4950 3850
+F 0 "J1" H 4923 3823 50  0000 R CNN
+F 1 "Conn_01x04_Male" H 4923 3732 50  0000 R CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical" H 4950 3850 50  0001 C CNN
+F 3 "~" H 4950 3850 50  0001 C CNN
+	1    4950 3850
+	-1   0    0    -1  
+$EndComp
+$Comp
+L Switch:SW_Push SW1
+U 1 1 5BD5DD94
+P 5100 2100
+F 0 "SW1" H 5100 2385 50  0000 C CNN
+F 1 "SW_Push_Dual" H 5100 2294 50  0000 C CNN
+F 2 "Button_Switch_SMD:SW_SPST_PTS645" H 5100 2300 50  0001 C CNN
+F 3 "" H 5100 2300 50  0001 C CNN
+	1    5100 2100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4500 2400 4150 2400
+Wire Wire Line
+	4550 2200 4150 2200
+$Comp
+L Device:R R1
+U 1 1 5BD5DFA7
+P 2900 1400
+F 0 "R1" H 2970 1446 50  0000 L CNN
+F 1 "10k" H 2970 1355 50  0000 L CNN
+F 2 "Resistor_SMD:R_0805_2012Metric" V 2830 1400 50  0001 C CNN
+F 3 "~" H 2900 1400 50  0001 C CNN
+	1    2900 1400
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+5V #PWR01
+U 1 1 5BD5E234
+P 1400 900
+F 0 "#PWR01" H 1400 750 50  0001 C CNN
+F 1 "+5V" H 1415 1073 50  0000 C CNN
+F 2 "" H 1400 900 50  0001 C CNN
+F 3 "" H 1400 900 50  0001 C CNN
+	1    1400 900 
+	1    0    0    -1  
+$EndComp
+$Comp
+L Regulator_Linear:AP1117-33 U1
+U 1 1 5BD5E4DF
+P 1900 1050
+F 0 "U1" H 1900 1292 50  0000 C CNN
+F 1 "AP1117-33" H 1900 1201 50  0000 C CNN
+F 2 "Package_TO_SOT_SMD:SOT-223-3_TabPin2" H 1900 1250 50  0001 C CNN
+F 3 "http://www.diodes.com/datasheets/AP1117.pdf" H 2000 800 50  0001 C CNN
+	1    1900 1050
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1600 1050 1400 1050
+Wire Wire Line
+	1400 1050 1400 900 
+$Comp
+L power:GND #PWR02
+U 1 1 5BD5E5DB
+P 1900 1700
+F 0 "#PWR02" H 1900 1450 50  0001 C CNN
+F 1 "GND" H 1905 1527 50  0000 C CNN
+F 2 "" H 1900 1700 50  0001 C CNN
+F 3 "" H 1900 1700 50  0001 C CNN
+	1    1900 1700
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3550 1900 3550 1050
+Wire Wire Line
+	3550 1050 2900 1050
+Wire Wire Line
+	2950 2100 2900 2100
+Wire Wire Line
+	2900 2100 2900 1550
+Wire Wire Line
+	2900 1250 2900 1050
+Connection ~ 2900 1050
+Wire Wire Line
+	2900 1050 2700 1050
+Wire Wire Line
+	4550 2200 4550 3750
+Connection ~ 1400 1050
+Connection ~ 3550 4050
+Wire Wire Line
+	3550 4050 3550 5400
+Connection ~ 3550 1050
+Wire Wire Line
+	4750 3750 4550 3750
+Wire Wire Line
+	4750 3850 4500 3850
+Wire Wire Line
+	4500 2400 4500 3850
+Wire Wire Line
+	3550 4050 4300 4050
+Wire Wire Line
+	4300 3000 4150 3000
+Wire Wire Line
+	3550 3400 3550 4050
+$Comp
+L Device:R R4
+U 1 1 5BD6D3B0
+P 4300 3650
+F 0 "R4" H 4370 3696 50  0000 L CNN
+F 1 "10k" H 4370 3605 50  0000 L CNN
+F 2 "Resistor_SMD:R_0805_2012Metric" V 4230 3650 50  0001 C CNN
+F 3 "~" H 4300 3650 50  0001 C CNN
+	1    4300 3650
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4300 3000 4300 3500
+Wire Wire Line
+	4300 3800 4300 4050
+Connection ~ 4300 4050
+Wire Wire Line
+	4300 4050 4750 4050
+$Comp
+L Connector:USB_B_Micro J2
+U 1 1 5BD6EEEC
+P 900 1250
+F 0 "J2" H 955 1717 50  0000 C CNN
+F 1 "USB_B_Micro" H 955 1626 50  0000 C CNN
+F 2 "Connector_USB:USB_Micro-B_Amphenol_10103594-0001LF_Horizontal" H 1050 1200 50  0001 C CNN
+F 3 "~" H 1050 1200 50  0001 C CNN
+	1    900  1250
+	1    0    0    -1  
+$EndComp
+Connection ~ 3550 5400
+Wire Wire Line
+	3550 5400 3550 5500
+$Comp
+L Sensor-dawid:SHT20 U3
+U 1 1 5BD6E885
+P 6250 4600
+F 0 "U3" H 6020 4646 50  0000 R CNN
+F 1 "SHT20" H 6020 4555 50  0000 R CNN
+F 2 "Package_DFN_QFN:DFN-6-1EP_3x3mm_P1mm_EP1.5x2.4mm" H 6400 4850 50  0001 C CNN
+F 3 "https://www.sensirion.com/fileadmin/user_upload/customers/sensirion/Dokumente/2_Humidity_Sensors/Sensirion_Humidity_Sensors_SHT1x_Datasheet.pdf" H 6400 4850 50  0001 C CNN
+	1    6250 4600
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6150 5400 6150 4900
+Wire Wire Line
+	6150 4300 6150 1050
+Wire Wire Line
+	3550 5400 5550 5400
+$Comp
+L power:+3.3V #PWR0101
+U 1 1 5BD7CC20
+P 3550 900
+F 0 "#PWR0101" H 3550 750 50  0001 C CNN
+F 1 "+3.3V" H 3565 1073 50  0000 C CNN
+F 2 "" H 3550 900 50  0001 C CNN
+F 3 "" H 3550 900 50  0001 C CNN
+	1    3550 900 
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3550 1050 3550 900 
+$Comp
+L Device:CP C1
+U 1 1 5BD7D5CB
+P 1400 1300
+F 0 "C1" H 1518 1346 50  0000 L CNN
+F 1 "10u" H 1518 1255 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0805_2012Metric" H 1438 1150 50  0001 C CNN
+F 3 "~" H 1400 1300 50  0001 C CNN
+	1    1400 1300
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1400 1150 1400 1050
+Wire Wire Line
+	3550 1050 4550 1050
+$Comp
+L Device:R R2
+U 1 1 5BD82ADE
+P 2700 1400
+F 0 "R2" H 2770 1446 50  0000 L CNN
+F 1 "10k" H 2770 1355 50  0000 L CNN
+F 2 "Resistor_SMD:R_0805_2012Metric" V 2630 1400 50  0001 C CNN
+F 3 "~" H 2700 1400 50  0001 C CNN
+	1    2700 1400
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2700 2300 2700 1550
+Wire Wire Line
+	2700 1250 2700 1050
+Connection ~ 2700 1050
+$Comp
+L Device:R R3
+U 1 1 5BD8768B
+P 4550 1400
+F 0 "R3" H 4620 1446 50  0000 L CNN
+F 1 "10k" H 4620 1355 50  0000 L CNN
+F 2 "Resistor_SMD:R_0805_2012Metric" V 4480 1400 50  0001 C CNN
+F 3 "~" H 4550 1400 50  0001 C CNN
+	1    4550 1400
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4150 2100 4550 2100
+Wire Wire Line
+	4550 2100 4550 1550
+Wire Wire Line
+	4550 1250 4550 1050
+Connection ~ 4550 1050
+Wire Wire Line
+	4900 2100 4550 2100
+Connection ~ 4550 2100
+$Comp
+L Device:R R5
+U 1 1 5BD8B0C1
+P 5550 5050
+F 0 "R5" H 5620 5096 50  0000 L CNN
+F 1 "470" H 5620 5005 50  0000 L CNN
+F 2 "Resistor_SMD:R_0805_2012Metric" V 5480 5050 50  0001 C CNN
+F 3 "~" H 5550 5050 50  0001 C CNN
+	1    5550 5050
+	1    0    0    -1  
+$EndComp
+Connection ~ 5550 5400
+Wire Wire Line
+	5550 5400 6150 5400
+Wire Wire Line
+	1200 1050 1400 1050
+Wire Wire Line
+	1900 1350 1900 1600
+Wire Wire Line
+	1400 1450 1400 1600
+Connection ~ 1900 1600
+Wire Wire Line
+	1900 1600 1900 1700
+Wire Wire Line
+	2700 2300 2950 2300
+Wire Wire Line
+	6550 4500 6800 4500
+Wire Wire Line
+	5550 5200 5550 5400
+Wire Wire Line
+	5300 2100 5550 2100
+Wire Wire Line
+	5550 2100 5550 4900
+Wire Wire Line
+	6550 4700 6900 4700
+Wire Wire Line
+	2200 1050 2250 1050
+$Comp
+L Device:CP C2
+U 1 1 5BDA1C3B
+P 2250 1300
+F 0 "C2" H 2368 1346 50  0000 L CNN
+F 1 "10u" H 2368 1255 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0805_2012Metric" H 2288 1150 50  0001 C CNN
+F 3 "~" H 2250 1300 50  0001 C CNN
+	1    2250 1300
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1900 1600 2250 1600
+Wire Wire Line
+	2250 1600 2250 1450
+Connection ~ 2250 1050
+Wire Wire Line
+	2250 1050 2600 1050
+Wire Wire Line
+	2250 1050 2250 1150
+$Comp
+L Device:LED D1
+U 1 1 5BDA6808
+P 2700 3650
+F 0 "D1" V 2738 3533 50  0000 R CNN
+F 1 "LED" V 2647 3533 50  0000 R CNN
+F 2 "LED_SMD:LED_0805_2012Metric" H 2700 3650 50  0001 C CNN
+F 3 "~" H 2700 3650 50  0001 C CNN
+	1    2700 3650
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	4550 1050 6150 1050
+$Comp
+L Device:R R6
+U 1 1 5BDAA0BD
+P 2700 5050
+F 0 "R6" H 2770 5096 50  0000 L CNN
+F 1 "150" H 2770 5005 50  0000 L CNN
+F 2 "Resistor_SMD:R_0805_2012Metric" V 2630 5050 50  0001 C CNN
+F 3 "~" H 2700 5050 50  0001 C CNN
+	1    2700 5050
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2950 3000 2700 3000
+Wire Wire Line
+	2700 3000 2700 3500
+Wire Wire Line
+	2700 3800 2700 4900
+Wire Wire Line
+	2700 5200 2700 5400
+$Comp
+L Device:R_PHOTO R7
+U 1 1 5BDAE31E
+P 2250 4250
+F 0 "R7" H 2320 4296 50  0000 L CNN
+F 1 "R_PHOTO" H 2320 4205 50  0000 L CNN
+F 2 "OptoDevice:R_LDR_5.1x4.3mm_P3.4mm_Vertical" V 2300 4000 50  0001 L CNN
+F 3 "~" H 2250 4200 50  0001 C CNN
+	1    2250 4250
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R8
+U 1 1 5BDAEE93
+P 2250 3700
+F 0 "R8" H 2320 3746 50  0000 L CNN
+F 1 "220k" H 2320 3655 50  0000 L CNN
+F 2 "Resistor_SMD:R_0805_2012Metric" V 2180 3700 50  0001 C CNN
+F 3 "~" H 2250 3700 50  0001 C CNN
+	1    2250 3700
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R9
+U 1 1 5BDAEFD4
+P 2250 4750
+F 0 "R9" H 2320 4796 50  0000 L CNN
+F 1 "100k" H 2320 4705 50  0000 L CNN
+F 2 "Resistor_SMD:R_0805_2012Metric" V 2180 4750 50  0001 C CNN
+F 3 "~" H 2250 4750 50  0001 C CNN
+	1    2250 4750
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2250 5400 2250 4900
+Connection ~ 2250 5400
+Wire Wire Line
+	2250 5400 2700 5400
+Wire Wire Line
+	2250 4600 2250 4500
+Wire Wire Line
+	1400 1600 1900 1600
+Wire Wire Line
+	900  5400 2250 5400
+Wire Wire Line
+	2250 3550 2250 2300
+Wire Wire Line
+	2250 2300 2600 2300
+Wire Wire Line
+	2600 2300 2600 1050
+Connection ~ 2600 1050
+Wire Wire Line
+	2600 1050 2700 1050
+Wire Wire Line
+	2600 2500 2950 2500
+Wire Wire Line
+	2700 5400 3550 5400
+Connection ~ 2700 5400
+Wire Wire Line
+	900  1650 900  5400
+Text Label 4200 2200 0    50   ~ 0
+TX
+Text Label 4200 2400 0    50   ~ 0
+RX
+Wire Wire Line
+	6800 2500 4150 2500
+Wire Wire Line
+	6800 2500 6800 4500
+Wire Wire Line
+	4150 2600 6900 2600
+Wire Wire Line
+	6900 2600 6900 4700
+Wire Wire Line
+	2250 4500 2600 4500
+Connection ~ 2250 4500
+Wire Wire Line
+	2250 4500 2250 4400
+Wire Wire Line
+	2250 3850 2250 4100
+Wire Wire Line
+	2600 2500 2600 4500
+$EndSCHEMATC
