@@ -6,6 +6,8 @@
 #include <FS.h>
 #include <Wire.h>
 #include "DFRobot_SHT20.h"
+
+static const char     fw_build[]  = "0.1.0";
  
 #define BUTTON_PIN    0
 #define LED_PIN       10
@@ -13,12 +15,13 @@
 #define LONG_PRESS_MS 5000
 #define DNS_PORT      53
 #define WIFI_ATTEMPTS 25
+#define REBOOT_S      10
 
 DFRobot_SHT20     sht20;
 ESP8266WebServer  httpServer(80);
 ESP8266OTA        otaUpdater;
-HTTPClient        httpClient;
 DNSServer         dnsServer;
+HTTPClient        httpClient;
 
 static unsigned long previousMillis = 0;
 static unsigned long previousButtonMillis = 0;
@@ -30,12 +33,12 @@ static char          password[128] = "";
 static char          sensorid[16] = "";
 static char          rest_url[512] = "https://";
 static char          sha1_fingerprint[512] = "";
-static unsigned int  interval = 5;
+static unsigned int  interval = 10;
 
 static const char    config_host[]  = "iotgizmo";
 static const char    config_fname[] = "/iotgizmo.cfg";
 
-IPAddress ap_ip(192, 168, 1, 1);
+IPAddress ap_ip(192, 168, 5, 1);
 
 void setup(void) {
 
@@ -43,6 +46,7 @@ void setup(void) {
   Serial.begin(115200);
   Serial.println();
   Serial.println("Booting...");
+  Serial.printf("Build: %s\n", fw_build);
 
   // set up pins
   pinMode(LED_PIN, OUTPUT);
@@ -67,10 +71,14 @@ void setup(void) {
     Serial.println(interval);
     Serial.print("REST url: ");
     Serial.println(rest_url);
-    
-    WiFi.softAPdisconnect();
-    WiFi.disconnect();
-    WiFi.mode(WIFI_STA);
+    Serial.print("SHA1: ");
+    Serial.println(sha1_fingerprint);
+
+
+    WiFi.softAPdisconnect(true);
+    ETS_UART_INTR_DISABLE();
+    wifi_station_disconnect();
+    ETS_UART_INTR_ENABLE();
     WiFi.begin(ssid, password);
 
     Serial.print("Connecting to WiFi");
@@ -94,35 +102,51 @@ void setup(void) {
     configMode = true;
     prepare_config_mode();
   }
-  
 }
 
 void prepare_config_mode(void) {
+
+  // light a LED
+  digitalWrite(LED_PIN, HIGH);
   
   // set up OTAUpdater
   otaUpdater.setTitle("Firmware Update");
   otaUpdater.setBanner("Salesforce IoT Gizmo");
-  otaUpdater.setBranch("");
+  otaUpdater.setBuild(fw_build);
   otaUpdater.setup(&httpServer);
 
   // set up access point
-  String ap_ssid = "iotgizmo_" + String(ESP.getChipId());
-  WiFi.softAPdisconnect();
+  WiFi.persistent(false);
   WiFi.disconnect();
+  WiFi.softAPdisconnect(true);
   WiFi.mode(WIFI_AP);
+  WiFi.persistent(true);
+
+  Serial.print("Disconnecting STA...");
+  while (WiFi.status() == WL_CONNECTED)
+  {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("OK");
+    
+  String ap_ssid = "iotgizmo_" + String(ESP.getChipId());
   WiFi.softAPConfig(ap_ip, ap_ip, IPAddress(255, 255, 255, 0));
-  WiFi.softAP(ap_ssid.c_str());
+  Serial.print("Setting AP...");
+  Serial.println(WiFi.softAP(ap_ssid.c_str()) ? "Ready" : "Failed!");
   
   Serial.print("Config mode AP: ");
   Serial.println(ap_ssid);
   Serial.print("Config mode IP: ");
-  Serial.println(ap_ip);
+  Serial.println(WiFi.softAPIP());
 
   // set up DNS for captive portal
-  dnsServer.start(DNS_PORT, config_host, ap_ip);  
+  // dnsServer.start(DNS_PORT, config_host, ap_ip);  
+  dnsServer.start(DNS_PORT, "*", ap_ip); 
   
   // start http server
   httpServer.on("/", config_form);
+  httpServer.on("/reboot", handle_reboot);
   httpServer.onNotFound(redirect);
   httpServer.begin();
 }
@@ -154,6 +178,9 @@ int read_config() {
       s = f.readStringUntil('\n');
       strcpy(rest_url, s.c_str());
 
+      s = f.readStringUntil('\n');
+      strcpy(sha1_fingerprint, s.c_str());
+
       f.close();
     }
   }
@@ -179,16 +206,19 @@ void config_form() {
   snprintf(html, 1024,
   "<!DOCTYPE HTML><html><body>"
   "<p>Salesforce IoT Gizmo - Configuration</p>"
+  "<p>Build: %s</p>"
   "<form action='/' method='get'>"
   "SSID: <input type='text' name='ssid' value='%s'><br>"
   "Password: <input type='text' name='password' value='%s'><br>"
   "Sensor ID: <input type='text' name='sensorid' value='%s'><br>"
   "Interval (s): <input type='number' name='interval' min='1' max='3600' value='%d'><br>"
   "REST url: <input type='text' name='rest_url' value='%s'><br>"
+  "SHA1 fingerprint: <input type='text' name='sha1_fingerprint' value='%s'><br>"  
   "<input type='hidden' name='s' value='1'><br>"
   "<input type='submit' value='Submit'>"
   "</form></body></html>",
-  ssid, password, sensorid, interval, rest_url);
+  fw_build,
+  ssid, password, sensorid, interval, rest_url, sha1_fingerprint);
   
   if (httpServer.hasArg("s")) {
     handle_form();
@@ -208,6 +238,7 @@ void handle_form() {
   strcpy(sensorid, httpServer.arg("sensorid").c_str());
   interval = httpServer.arg("interval").toInt();
   strcpy(rest_url, httpServer.arg("rest_url").c_str());
+  strcpy(sha1_fingerprint, httpServer.arg("sha1_fingerprint").c_str());  
 
   // save SPIFFS
   SPIFFS.begin();
@@ -215,14 +246,21 @@ void handle_form() {
   if (!f) {
     Serial.println("File open failed");
   } else {
-    f.printf("%s\n%s\n%s\n%d\n%s\n", ssid, password, sensorid, interval, rest_url);
+    f.printf("%s\n%s\n%s\n%d\n%s\n%s\n", ssid, password, sensorid, interval, rest_url, sha1_fingerprint);
     f.close();
-    snprintf(html, 1024, "<!DOCTYPE HTML><html><body><p>Configuration saved.</p><a href='http://%s/'>Return</a></body></html>", config_host);
+    snprintf(html, 1024, "<!DOCTYPE HTML><html><head><meta http-equiv='refresh' content='%d; url=http://%s/reboot'></head><body><p>Configuration saved. Device will reboot in %d seconds.</p><a href='http://%s/'>Return</a></body></html>", REBOOT_S, config_host, REBOOT_S, config_host);
   }
  
   httpServer.send(200, "text/html", html);
   
 }
+
+void handle_reboot() {
+
+  ESP.restart();
+  
+}
+
 
 void loop(void){
   
@@ -273,7 +311,7 @@ void loop(void){
       Serial.println();
   
       // call salesforce webservice
-      httpClient.begin("https://iotdemosa1-developer-edition.eu16.force.com/services/apexrest/iotservice?temperature=" + String(temp) + "&humidity=" + String(humd) + "&button=" + String(buttonPress) + "&sensorid=" + String(sensorid), "83 A4 EF 08 7A 7A 1C B8 58 B4 26 E7 B1 AD 45 71 66 FA 0F 7D");
+      httpClient.begin(String(rest_url) + "?temperature=" + String(temp) + "&humidity=" + String(humd) + "&button=" + String(buttonPress) + "&sensorid=" + String(sensorid), sha1_fingerprint);
       int httpCode = httpClient.GET();
       if(httpCode > 0) {
         Serial.printf("[HTTP] %d: ", httpCode);
