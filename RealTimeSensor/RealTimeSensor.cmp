@@ -1,0 +1,30 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId" access="global" >
+    <aura:attribute name="recordId" type="id"/>
+    <aura:attribute name="Asset" type="Asset"/>
+    <aura:attribute name="maxReadouts" type="Integer" default="20"/>
+    <aura:attribute name="scriptInitialized" type="Boolean" default="false"/>
+    <aura:attribute name="dataInitialized" type="Boolean" default="false"/>
+    <aura:attribute name="graphsInitialized" type="Boolean" default="false"/>
+    <aura:attribute name="channel" type="String" default="/event/Climate_Control_Event__e"/>
+    <aura:attribute name="subscription" type="Map"/>
+    <aura:attribute name="TChartObject" type="Object" access="public" />
+    <aura:attribute name="HChartObject" type="Object" access="public" />
+    <aura:attribute name="LChartObject" type="Object" access="public" />    
+    <aura:handler name="init" value="{!this}" action="{!c.onInit}" />
+    <lightning:empApi aura:id="empApi"/>
+    <force:recordData aura:id="assetRecord" recordId="{!v.recordId}" targetFields="{!v.Asset}" fields="Sensor_Id__c,Service_Contract__r.Temperature_Min__c,Service_Contract__r.Temperature_Max__c,Service_Contract__r.Humidity_Min__c,Service_Contract__r.Humidity_Max__c" recordUpdated="{!c.initData}" />
+	<ltng:require scripts="{!$Resource.Chart}" afterScriptsLoaded="{!c.initScript}"/>    
+    
+    <lightning:card iconName="standard:calibration" title="{! 'Real time data for sensor: ' + v.Asset.Sensor_Id__c}">
+        <div class="slds-align_absolute-center slds-col slds-size--1-of-1 slds-small-size--1-of-2 slds-medium-size--3-of-4">
+            <canvas aura:id="tempChart" id="tempChart" />
+        </div>
+        <div class="slds-align_absolute-center slds-col slds-size--1-of-1 slds-small-size--1-of-2 slds-medium-size--3-of-4">
+            <canvas aura:id="humChart" id="humChart" />
+        </div>
+        <div class="slds-align_absolute-center slds-col slds-size--1-of-1 slds-small-size--1-of-2 slds-medium-size--3-of-4">
+            <canvas aura:id="lightChart" id="lightChart" />
+        </div>          
+    </lightning:card>
+    
+</aura:component>

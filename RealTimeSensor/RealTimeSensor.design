@@ -1,0 +1,3 @@
+<design:component>
+	<design:attribute name="maxReadouts" label="Readout overflow" description="Maximum number of readouts in chart" default="20" min="5" max="100" />
+</design:component>
